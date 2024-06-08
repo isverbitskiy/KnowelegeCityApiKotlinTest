@@ -40,3 +40,9 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/lib/jcommander-1.82.jar
+/lib/jquery-3.6.0.jar
+/lib/jsr305-3.0.2.jar
+/.idea/kotlinc.xml
+/lib/slf4j-api-1.7.36.jar
+/lib/testng-7.6.0.jar
