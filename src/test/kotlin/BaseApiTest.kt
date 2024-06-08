@@ -1,16 +1,11 @@
 import com.github.javafaker.Faker
-import io.ktor.client.HttpClient
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.parameter
-import io.ktor.client.request.post
-import io.ktor.client.request.request
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.contentType
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeEach
 
 open class BaseApiTest {
     companion object {
@@ -32,23 +27,19 @@ open class BaseApiTest {
         val faker = Faker()
     }
 
-    protected val BASE_URL = "https://qa-test.kcdev.pro"
+    private val BASE_URL = "https://qa-test.kcdev.pro"
     protected val staticEmail = "niwatarou@gmail.com"
-    protected val client = HttpClient()
-
-    protected suspend fun baseRequest(block: HttpRequestBuilder.() -> Unit): HttpResponse {
-        return client.request {
-            contentType(ContentType.Application.FormUrlEncoded)
-            block()
+    private val client = HttpClient(CIO) {
+        defaultRequest {
+            url(BASE_URL)
+            header(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded)
         }
     }
 
-    @BeforeEach
-    fun setup() {
-        client.config {
-            defaultRequest {
-                url(BASE_URL)
-            }
+    protected suspend fun baseRequest(block: HttpRequestBuilder.() -> Unit): HttpResponse {
+        return client.request {
+            method = HttpMethod.Post
+            block()
         }
     }
 
@@ -57,7 +48,7 @@ open class BaseApiTest {
     }
 
     protected fun resetUserState(email: String) = runBlocking {
-        client.post("") {
+        baseRequest {
             parameter("email", email)
             parameter("action", "reset")
         }.apply {
@@ -70,17 +61,54 @@ open class BaseApiTest {
     protected fun extractScore(response: String): Int {
         val scorePrefix = "Current score: "
         val index = response.indexOf(scorePrefix)
-        return if (index != 1) {
+        return if (index != -1) {
             response.substring(index + scorePrefix.length).trim().toInt()
         } else {
             throw IllegalStateException("Score not found in response")
         }
     }
 
-    protected fun extactQuestionId(response: String): Int {
+    protected fun extractQuestionId(response: String): Int {
         return response.lines().find {
             it.startsWith("Id:")
         }?.replace("Id:", "")?.trim()?.toInt()
             ?: throw IllegalStateException("Id not found in response")
+    }
+
+    protected fun login(email: String) = runBlocking {
+        baseRequest {
+            parameter("email", email)
+            parameter("action", "login")
+        }
+    }
+
+    protected fun getNextQuestion(email: String) = runBlocking {
+        baseRequest {
+            parameter("email", email)
+            parameter("action", "question")
+        }
+    }
+
+    protected fun submitAnswer(email: String, questionId: String, answer: String) = runBlocking {
+        baseRequest {
+            parameter("email", email)
+            parameter("action", "answer")
+            parameter("question_id", questionId)
+            parameter("answer", answer)
+        }
+    }
+
+    protected fun getScore(email: String) = runBlocking {
+        baseRequest {
+            parameter("email", email)
+            parameter("action", "score")
+        }
+    }
+
+    protected fun reset(email: String) = runBlocking {
+        baseRequest {
+            parameter("email", email)
+            parameter("action", "reset")
+        }
     }
 }
