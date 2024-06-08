@@ -1,7 +1,6 @@
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.qameta.allure.Allure
 import io.qameta.allure.Description
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
