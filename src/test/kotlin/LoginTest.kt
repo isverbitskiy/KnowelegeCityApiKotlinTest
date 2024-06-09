@@ -9,7 +9,6 @@ class LoginTest : BaseApiTest() {
     @Description("Login attempt with an already registered email.")
     fun testExistingUserLogin() = runBlocking {
         val response = login(staticEmail)
-
         assertAlreadyLogged(response)
     }
 
@@ -17,9 +16,7 @@ class LoginTest : BaseApiTest() {
     @Description("Successful registration of a new user.")
     fun testNewUserRegistration() = runBlocking {
         val email = generateRandomEmail()
-
         val response = login(email)
-
         assertSuccessLogged(response)
     }
 
@@ -27,9 +24,7 @@ class LoginTest : BaseApiTest() {
     @Description("Test for invalid email format (missing top-level domain).")
     fun testInvalidEmailFormat() = runBlocking {
         val domain = generateRandomDomain()
-
         val response = login(domain)
-
         assertInvalidEmail(response)
     }
 
@@ -37,7 +32,6 @@ class LoginTest : BaseApiTest() {
     @Description("Test for invalid email format (missing dot in domain).")
     fun testInvalidEmailDotFormat() = runBlocking {
         val response = login("test@testtest")
-
         assertInvalidEmail(response)
     }
 
@@ -47,7 +41,6 @@ class LoginTest : BaseApiTest() {
         val response = baseRequest {
             parameter(PARAM_ACTION, ACTION_LOGIN)
         }
-
         assertMissingEmail(response)
     }
 
@@ -55,11 +48,9 @@ class LoginTest : BaseApiTest() {
     @Description("Missing action parameter")
     fun testMissingActionParameter() = runBlocking {
         val email = generateRandomEmail()
-
         val response = baseRequest {
             parameter(PARAM_EMAIL, email)
         }
-
         assertMissingAction(response)
     }
 
@@ -69,9 +60,7 @@ class LoginTest : BaseApiTest() {
         val username = "a".repeat(256)
         val domain = generateRandomDomain()
         val email = "$username@$domain"
-
         val response = login(email)
-
         assertInvalidEmail(response)
     }
 
@@ -80,9 +69,7 @@ class LoginTest : BaseApiTest() {
     fun testInvalidCharEmailFormat() = runBlocking {
         val domain = generateRandomDomain()
         val email = "test\"123\"@$domain"
-
         val response = login(email)
-
         assertInvalidEmail(response)
     }
 
@@ -90,7 +77,6 @@ class LoginTest : BaseApiTest() {
     @Description("Empty email.")
     fun testEmptyEmail() = runBlocking {
         val response = login("")
-
         assertInvalidEmail(response)
     }
 
@@ -98,12 +84,10 @@ class LoginTest : BaseApiTest() {
     @Description("Invalid action parameter.")
     fun testInvalidActionParameter() = runBlocking {
         val email = generateRandomEmail()
-
         val response = baseRequest {
             parameter(PARAM_EMAIL, email)
             parameter(PARAM_ACTION, email)
         }
-
         assertInvalidAction(response)
     }
 }
