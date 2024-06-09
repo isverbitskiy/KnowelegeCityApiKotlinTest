@@ -7,14 +7,6 @@ import org.junit.jupiter.api.Test
 class QuestionTest : BaseApiTest() {
 
     @Test
-    @Description("Verifies retrieving the next question for a registered user.")
-    fun testNextQuestion() = runBlocking { //TODO refactor to resetStateTest
-        resetUserState(staticEmail)
-        val response = getNextQuestion(staticEmail)
-        assertFullResponse(response, 0)
-    }
-
-    @Test
     @Description("Ensure that a 400 error is returned when the email parameter is missing.")
     fun testMissingEmailParameter() = runBlocking {
         val response = baseRequest {
