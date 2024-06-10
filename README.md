@@ -27,19 +27,29 @@ submission, and score tracking.
    ```bash
    git clone https://github.com/isverbitskiy/KnowelegeCityApiKotlinTest.git
    cd KnowelegeCityApiKotlinTest
+   ```
 
 2. Open the project in your favorite IDE (IntelliJ IDEA recommended).
 3. Build the project using Gradle:
 
-   ```gradle build```
+   ```bash
+   gradle build
+   ```
 
 ## Running Tests
 
 To run the tests, use the following command:
-```gradle clean test```
+
+   ```bash 
+   gradle clean test
+   ```
 
 To generate an Allure report, run:
-```gradle allure serve build/allure-results```
+
+   ```bash
+   allure serve build/allure-results
+   ```
+
 Open the generated report in your browser to view the detailed test results.
 
 ## Project Structure
