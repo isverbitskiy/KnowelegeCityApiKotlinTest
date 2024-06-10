@@ -1,4 +1,3 @@
-import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.qameta.allure.Description
 import kotlinx.coroutines.runBlocking
@@ -9,16 +8,15 @@ class QuestionTest : BaseApiTest() {
     @Test
     @Description("Ensure that a 400 error is returned when the email parameter is missing.")
     fun testMissingEmailParameter() = runBlocking {
-        val response = baseRequest {
-            parameter(PARAM_ACTION, ACTION_QUESTION)
-        }
+        val response = getNextQuestion("")
         assertMissingEmail(response)
     }
 
     @Test
     @Description("Ensure that a 400 error is returned when the email format is invalid.")
     fun testInvalidEmailFormat() = runBlocking {
-        val response = getNextQuestion("test")
+        val incorrectEmail = generateRandomDomain()
+        val response = getNextQuestion(incorrectEmail)
         assertInvalidEmail(response)
     }
 
@@ -67,5 +65,13 @@ class QuestionTest : BaseApiTest() {
         submitAnswer(staticEmail, 0, 0)
         val response = getNextQuestion(staticEmail)
         assertFullResponse(response, 1)
+    }
+
+    @Test
+    @Description("Next question for unauthorized user.")
+    fun testNextQuestionForUnauthorizedUser() = runBlocking {
+        val email = generateRandomEmail()
+        val response = getNextQuestion(email)
+        assertUnregisteredUser(response)
     }
 }

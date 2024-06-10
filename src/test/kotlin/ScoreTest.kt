@@ -47,4 +47,12 @@ class ScoreTest : BaseApiTest() {
         response = getScore(staticEmail)
         assertCurrentScore(response, currentScore + 2)
     }
+
+    @Test
+    @Description("Checks that the score cannot be displayed correctly for an unauthorized user.")
+    fun testCheckScoreForUnauthorizedUser() = runBlocking {
+        val email = generateRandomEmail()
+        val response = getScore(email)
+        assertUnregisteredUser(response)
+    }
 }
