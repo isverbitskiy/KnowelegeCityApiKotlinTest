@@ -40,14 +40,14 @@ submission, and score tracking.
 
 To run the tests, use the following command:
 
-   ```bash 
-   gradle clean test
+   ```bash
+    gradle clean test
    ```
 
 To generate an Allure report, run:
 
    ```bash
-   allure serve build/allure-results
+    allure serve build/allure-results
    ```
 
 Open the generated report in your browser to view the detailed test results.
