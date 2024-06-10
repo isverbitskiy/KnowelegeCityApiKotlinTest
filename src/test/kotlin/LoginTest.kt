@@ -31,16 +31,15 @@ class LoginTest : BaseApiTest() {
     @Test
     @Description("Test for invalid email format (missing dot in domain).")
     fun testInvalidEmailDotFormat() = runBlocking {
-        val response = login("test@testtest")
+        val email = generateRandomEmail().replace(".", "")
+        val response = login(email)
         assertInvalidEmail(response)
     }
 
     @Test
     @Description("Missing email parameter.")
     fun testMissingEmailParameter() = runBlocking {
-        val response = baseRequest {
-            parameter(PARAM_ACTION, ACTION_LOGIN)
-        }
+        val response = login("")
         assertMissingEmail(response)
     }
 
@@ -76,7 +75,7 @@ class LoginTest : BaseApiTest() {
     @Test
     @Description("Empty email.")
     fun testEmptyEmail() = runBlocking {
-        val response = login("")
+        val response = login(" ")
         assertInvalidEmail(response)
     }
 

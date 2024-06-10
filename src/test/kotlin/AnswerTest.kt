@@ -45,8 +45,9 @@ class AnswerTest : BaseApiTest() {
     @Description("Verifies submitting an answer to a question as a new user.")
     fun testSubmitAnswerWithNewUser() = runBlocking {
         val newEmail = generateRandomEmail()
-        login(newEmail)
-        val response = submitAnswer(newEmail, 1, 1)
+        var response = login(newEmail)
+        assertSuccessLogged(response)
+        response = submitAnswer(newEmail, 1, 1)
         assertCorrectAnswer(response)
     }
 
@@ -93,5 +94,13 @@ class AnswerTest : BaseApiTest() {
         submitAnswer(staticEmail, 0, 0)
         val secondAnswerScore = extractScore(staticEmail)
         assertEquals(firstAnswerScore, secondAnswerScore, "Score increased after duplicate answer")
+    }
+
+    @Test
+    @Description("Check answer for unauthorized user.")
+    fun testSubmitAnswerForUnauthorizedUser() = runBlocking {
+        val email = generateRandomEmail()
+        val response = submitAnswer(email, 0)
+        assertUnregisteredUser(response)
     }
 }
